@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <%- include ./modules/head.ejs %>
+  </head>
+  <body>
+    <h1><%= title %></h1>
+    <p>Welcome to <%= title %></p>
+		<div id="app">
+		    <i-button @click="show">Click me!</i-button>
+		    <Modal v-model="visible" title="Welcome">欢迎使用 iView</Modal>
+		</div>
+    <%- include ./modules/footer.ejs %>
+    <script>
+	    new Vue({
+	        el: '#app',
+	        data: {
+	            visible: false
+	        },
+	        methods: {
+	            show: function () {
+	                this.visible = true;
+	            }
+	        }
+	    })
+	  </script>
+  </body>
+</html>
