@@ -7,7 +7,6 @@ var bodyParser = require('body-parser');
 
 
 var routes = require('./libs/routes');
-var mysql = require('./libs/mysql');
 
 var app = express();
 // view engine setup
@@ -21,12 +20,17 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
-mysql.init(app);
+app.all('*', function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "X-Requested-With");
+    res.header("Access-Control-Allow-Methods","PUT,POST,GET,DELETE,OPTIONS");
+    res.header("Content-Type", "application/json;charset=utf-8");
+    console.log(req.method)
+    next();
+});
 for(r in routes){
 	app.use(r, routes[r]);
 }
-
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
