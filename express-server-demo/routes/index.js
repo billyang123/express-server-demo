@@ -1,15 +1,6 @@
 var express = require('express');
 var router = express.Router();
 var user = require('../database/db').user;
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
-});
-/* login */
-router.get('/login', function(req, res) {
-	console.log("login")
-    res.render('login', { title: 'login' });
-});
 /* dologin */
 router.post('/login', function(req, res) {
   var query = {name: req.body.name, password: req.body.password};

@@ -1,8 +1,8 @@
 
 exports.Users = {
-	account:"admin4",
-	password:"ybb7060093",
-	name:"管理员test",
+	account:"Admin-ybb",
+	password:F.encrypt("ybb7060093"),
+	name:"管理员-ybb",
 	joinTime:new Date(),
 	email:"yangbinbin_1226@126.com",
 	isAdmin:true
@@ -27,3 +27,4 @@ exports.Comment = {
 	content: "pinlces是多少",
   date: new Date()
 };
+

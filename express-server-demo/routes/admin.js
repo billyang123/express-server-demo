@@ -1,67 +1,32 @@
 var express = require('express');
 var router = express.Router();
-var db = require('../database/db');
-var Users = db.Users;
-var Category = db.Category;
-var Article = db.Article;
-var Tags = db.Tags;
-var Comment = db.Comment;
-/* GET users listing. */
 
-var admin = new Users({
-	account:"admin4",
-	password:"ybb7060093",
-	name:"管理员test",
-	joinTime:new Date(),
-	email:"yangbinbin_1226@126.com",
-	isAdmin:true
-})
-var post = new Article({
-	title:"关于专栏文章",
-	abstract: "SegmentFault 文章是面向中文开发者的高品质的技术学习与分享平台，任何人都可以创建属于自己的专栏。在这里",
-	content:"原创的文章是自己学习和探索的结果，独立的思考会给他人更大的启发，会引导他人去发现、实现可能更加有趣的事。所以，如果是翻译或转载的文章，可以在文章标题最前面注明 [译] [转]，并在文章显要位置注明原作出处。",
-	createTime:new Date(),
-	updateTime:new Date(),
-	click: 0,
-})
-var _tags = new Tags({
-	name:"sjj",
-	describe:"asdfasdasfasfasfasfas"
-})
-var _Category = new Category({
-	name:"web",
-	describe:"asdasfd2345465"
-})
-var _Comment = new Comment({
-  content: "pinlces是多少",
-  date: new Date()
-})
-var cate = {
-	name:"后端",
-	describe:"会写Java代码，会写SQL语句，能做简单的数据库设计，会Spring和iBatis，懂一些设计模式等。"
-}
-function addInsert(modal){
-	
-}
-router.get('/add', function(req, res, next) {
-	admin.save().then(function(user) {
-	  post.uID = user;
-	  _Comment.uID = user;
-	  return Promise.all([post.save(), _Comment.save(),_tags.save(),_Category.save(), user]);
-	}).spread(function(_post, comment, tag, cates, user) {
-	  user.posts.push(_post);
-	  _post.user = user;
-	  _post.comments.push(comment);
-	  _post.tags.push(tag);
-	  _post.category = cates;
-	  return Promise.all([user.save(), _post.save()]);
-	}).spread(function() {
-	  res.json({success:0});
-	}).catch(function(reason) {
-	  console.log(reason);
+var data = require('../database/testdb');
+router.get('/get', function(req, res, next) {
+	M.users.find({},function (err, docs) {
+		if (err) {
+	    res.json({success:1,'err':err});
+	  }
+		res.json({success:0,'Tags':docs});
 	});
 });
-router.get('/addCategory', function(req, res, next) {
+router.get('/add', function(req, res, next) {
+	F.co(function *() {
+		var result = yield M.users.create(data.Users)
+		if(result) {
+			res.json({success:0,user:result});
+		}else{
+			res.json({success:1,'msg':"更新失败"});
+		}
+	},res)
+	/*M.users.create(data.Users,function (err, node, numAffected) {
+		if (err) {
+	    res.json({success:1,'err':err});
+	  }
+		res.json({success:0,'node':node});
+	});*/
+});
+/*router.get('/addCategory', function(req, res, next) {
 	var cate1 = new Category(cate);
 	cate1.save(function (err, cateeee) {
 		if (err) {
@@ -118,5 +83,5 @@ router.get('/addPost', function(req, res, next) {
 	  }
 		res.json({success:0,'Article':cateeee});
 	});
-});
+});*/
 module.exports = router;
