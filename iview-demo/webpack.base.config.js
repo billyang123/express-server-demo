@@ -2,11 +2,17 @@ const path = require('path');
 const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
+//var lang = require('highlight.js-async-webpack/src/file.lang.hljs.js');
+var _entry= {
+    main: './src/main',
+    vendors: './src/vendors'
+};
+// for (var i = 0; i < lang.length; i++) {
+//     _entry[lang[i]] = ['mavon-editor/dist/js/' + lang[i] + '.js']
+// }
+
 module.exports = {
-    entry: {
-        main: './src/main',
-        vendors: './src/vendors'
-    },
+    entry: _entry,
     output: {
         path: path.join(__dirname, './dist')
     },

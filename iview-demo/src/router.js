@@ -9,6 +9,12 @@ const routers = [{
     meta: {
         title: '登录页面'
     },
-    component: (resolve) => require(['./views/login/index.vue'], resolve)
+    component: (resolve) => require(['./views/auth/index.vue'], resolve)
+},{
+    path: '/write',
+    meta: {
+        title: '写文章'
+    },
+    component: (resolve) => require(['./views/write/index.vue'], resolve)
 }];
 export default routers;

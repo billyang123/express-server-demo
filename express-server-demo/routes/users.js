@@ -20,7 +20,10 @@ router.post('/auth/:action', function(req, res, next) {
           id: user._id,
           avator: user.avator,
           name: user.name,
-          email: user.email
+          email: user.email,
+          isAdmin:user.isAdmin,
+          joinTime:user.joinTime,
+          account:user.account
         };
 			}else{
 				code = 1;
@@ -29,8 +32,9 @@ router.post('/auth/:action', function(req, res, next) {
 			res.json({
         status: {
           code: code,
-          msg: msg
-        }
+          msg: msg,
+        },
+        user:code===0?req.session.user:null
       })
 		} else if (query.action === 'out') {
       req.session.admin = null;

@@ -15,7 +15,8 @@ const ajaxUrl = env === 'development' ?
     env === 'production' ?
     'https://www.url.com' :
     'https://debug.url.com';
-util.ajax = axios.create({
+util.ajaxInit = (options)=>{
+	let setting = Object.assign({},{
     baseURL: ajaxUrl,
     timeout: 30000,
     transformRequest: [function (data) {
@@ -23,6 +24,7 @@ util.ajax = axios.create({
     	data = Qs.stringify(data);
     	return data;
     }],
+    responseType:'json',
     transformResponse: [function (data) {
     // 这里提前处理返回的数据
 	    return data;
@@ -30,6 +32,20 @@ util.ajax = axios.create({
     headers: {
 	    'Content-Type': 'application/x-www-form-urlencoded'
 	  }
-});
+	},options)
+	return axios.create(setting);
+}
+let localStorage = window.localStorage
 
+
+util.storeBaseInfo = (data) => {
+  localStorag.setItem('diandi_BaseInfo', JSON.stringify(data))
+}
+
+util.getStore = ()=>{
+	if (localStorage.getItem('diandi_BaseInfo')) {
+    let data = JSON.parse(localStorage.getItem('diandi_BaseInfo'))
+    return data;
+  }
+}
 export default util;
