@@ -19,7 +19,6 @@ global.F = require(path.join(C.dir.controller, C.exceptFolder, 'funcs'));
 require(path.join(C.dir.model, C.exceptFolder,'index')); // model初始化入口
 
 var routes = require('./libs/routes');
-
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
