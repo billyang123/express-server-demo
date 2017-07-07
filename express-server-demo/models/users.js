@@ -16,6 +16,10 @@ module.exports = function (Schema) {
 		isAdmin:{
 			type:Boolean,
 			default:false
+		},
+		level:{
+			type:Number,
+			default:0
 		}
 	}
 }

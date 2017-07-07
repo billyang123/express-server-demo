@@ -12,9 +12,9 @@
 	    width: 100%;
 	    height: 100%;
 	}
-  .login {
+  .auth-box {
       width: 100%;
-      position: absolute;
+      position: fixed;
       top: 0;
       bottom: 0;
       left: 0;
@@ -34,12 +34,12 @@
   }
 </style>
 <template>
-    <div class="login">
+    <div class="auth-box">
     		<div class="login-box">
     			<h1 class="login-title">个人笔记</h1>
-          <Form ref="formInline" :model="loginForm" :rules="rule">
-              <Form-item prop="user">
-                  <Input type="text" v-model="loginForm.name" placeholder="用户名">
+          <Form ref="formInline" :model="loginForm" :rules="rules">
+              <Form-item prop="account">
+                  <Input type="text" v-model="loginForm.account" placeholder="用户名">
                       <Icon type="ios-person-outline" slot="prepend"></Icon>
                   </Input>
               </Form-item>
@@ -74,16 +74,21 @@
     </div>
 </template>
 <script>
-  import util from '../../libs/util'
+  import { setUserInfo } from '../../vuex/actions/user_actions'
   export default {
+    vuex: {
+      actions: {
+        setUserInfo
+      }
+    },
   	data() {
       return {
         loginForm:{
-          name: '',
+          account: '',
           password: ''
         },
         rules:{
-          user: [
+          account: [
               { required: true, message: '请填写用户名', trigger: 'blur' }
           ],
           password: [
@@ -95,15 +100,17 @@
     },
     methods: {
         handleLogin() {
-          util.ajax({
+          this.utils.ajax({
             method: 'post',
-            url: '/login',
+            url: '/users/auth/in',
             data: {
-              name: this.loginForm.name,
+              account: this.loginForm.account,
               password: this.loginForm.password
             }
-          }).then(function(res){
-            console.log(res)
+          }).then((res)=>{
+            if(res.user){
+              //this.setBaseInfo(res.user)
+            }
           })
         }
     }

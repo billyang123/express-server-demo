@@ -19,10 +19,10 @@ global.F = require(path.join(C.dir.controller, C.exceptFolder, 'funcs'));
 require(path.join(C.dir.model, C.exceptFolder,'index')); // model初始化入口
 
 var routes = require('./libs/routes');
-
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
+
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
