@@ -1,5 +1,5 @@
 <template>
-<div style="padding:10px 0">
+<div style="padding:10px 0" ref="tagForm">
     <Form :model="tagForm" :rules="tagRule">
         <Form-item prop="name">
             <Input type="text" v-model="tagForm.name" placeholder="标签名称..."></Input>

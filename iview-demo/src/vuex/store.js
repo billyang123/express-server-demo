@@ -1,13 +1,18 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import userInfo from './modules/user_info'
+
 Vue.use(Vuex)
 
-const debug = process.env.NODE_ENV !== 'production'
+const state = {
+	user:{}
+}
+
+const mutations = {
+	isLogin (state,user) {
+		state.user = user
+	}
+}
 export default new Vuex.Store({
-  modules: {
-    userInfo
-  },
-  strict: debug,
-  middlewares: debug ? [] : []
+	state,
+	mutations
 })

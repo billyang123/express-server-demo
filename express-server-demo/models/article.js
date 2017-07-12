@@ -1,6 +1,6 @@
 module.exports = function (Schema) {
   return {  
-	  title:String,
+	  	title:String,
 		abstract: String,
 		content:String,
 		createTime:{
@@ -11,22 +11,23 @@ module.exports = function (Schema) {
 			type:Date,
 			default:Date.now
 		},
-		click: {type: Number},
+		click: {type: Number,default:0},
+		cover:String,
 		comments:[{
 				type : Schema.Types.ObjectId,
-				ref : 'Comment'
+				ref : 'comment'
 		}],
 		tags:[{
 				type : Schema.Types.ObjectId,
-				ref : 'Tags'
+				ref : 'tags'
 		}],
 		user:{
 			type : Schema.Types.ObjectId,
-			ref : 'Users'
+			ref : 'users'
 		},
 		category:{
 			type : Schema.Types.ObjectId,
-			ref : 'Category'
+			ref : 'category'
 		}
 	};
 }

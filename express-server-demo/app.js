@@ -15,7 +15,8 @@ var app = express();
 global.C = require('./config');
 global.M = {};//model初始化
 global.F = require(path.join(C.dir.controller, C.exceptFolder, 'funcs'));
-
+global.ObjectID = require('mongodb').ObjectID;
+global.moment = require('moment');
 require(path.join(C.dir.model, C.exceptFolder,'index')); // model初始化入口
 
 var routes = require('./libs/routes');

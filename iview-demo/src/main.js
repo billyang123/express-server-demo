@@ -45,21 +45,7 @@ router.afterEach(() => {
     window.scrollTo(0, 0);
 });
 
-// import store from './vuex/store'
-const store = new Vuex.Store({
-    state: {
-
-    },
-    getters: {
-
-    },
-    mutations: {
-    
-    },
-    actions: {
-
-    }
-});
+import store from './vuex/store'
 new Vue({
     el: '#app',
     router: router,

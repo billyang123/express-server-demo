@@ -3,16 +3,17 @@ var router = express.Router();
 
 var data = require('../database/testdb');
 router.get('/get', function(req, res, next) {
-	M.users.find({},function (err, docs) {
+	M.article.find({},function (err, docs) {
+		console.log(docs)
 		if (err) {
 	    res.json({success:1,'err':err});
 	  }
-		res.json({success:0,'Tags':docs});
+		res.json({success:0,'article':docs});
 	});
 });
 router.get('/add', function(req, res, next) {
 	F.co(function *() {
-		var result = yield M.users.create(data.Users)
+		var result = yield M.category.create(data.Category)
 		if(result) {
 			res.json({success:0,user:result});
 		}else{

@@ -41,21 +41,49 @@
         	<li class="ivu-dropdown-item" :class="{'ivu-dropdown-item-focus':selectIndex == index}" v-for="(item,index) in tagsList" key="_id"  @mouseenter="selectIndex=index"  @click="tagSelect(item)">{{item.name}}</li>
         </Dropdown-menu>
     </Dropdown>
+    <Modal
+        v-model="tagModal"
+        title="添加标签"
+        @on-ok="addtagok"
+    >
+        <div style="padding:10px 0" ref="tagForm">
+            <Form :model="tagForm" :rules="tagRule">
+                <Form-item prop="name">
+                    <Input type="text" v-model="tagForm.name" placeholder="标签名称..."></Input>
+                </Form-item>
+                <Form-item prop="describe">
+                    <Input type="textarea" v-model="tagForm.describe" placeholder="标签描述..."></Input>
+                </Form-item>
+            </Form>
+        </div>
+    </Modal>
   </div>
 </template>
-
 <script>
-import tagForm from './tagForm'
 export default {
 	name:"AutoComplete",
   data () {
     return {
+      tagForm: {
+          name: '',
+          describe: ''
+      },
+      tagRule: {
+          name: [
+              { required: true, message: '请填写标签名称', trigger: 'blur' }
+          ],
+          describe: [
+              { required: true, message: '请填写标签描述', trigger: 'blur' },
+              { type: 'string', min: 15, message: '长度不够', trigger: 'blur' }
+          ]
+      },
+      tagModal:false,
     	selectIndex:0,
     	newTag:{
     		name:'',
     		describe:''
     	},
-    	inputKey:'',
+    	// inputKey:this.value,
     	tags:[],
     	tagsList:[
     		{
@@ -66,6 +94,18 @@ export default {
     	visible: false
     }
   },
+  props:['value'],
+  computed:{
+    inputKey: {
+         // 动态计算currentValue的值
+         get:function() {
+             return this.value;
+         },
+         set:function(val) {
+             this.$emit('input', val);
+         }
+    }
+  },
   watch:{
   	visible(){
   		if(this.visible){
@@ -74,6 +114,28 @@ export default {
   	}
   },
   methods: {
+    addtagok(){
+      this.utils.ajax({
+        method: 'post',
+        url: '/tags/add',
+        data: {
+          name:this.tagForm.name,
+          describe:this.tagForm.describe
+        }
+      }).then((res)=>{
+        this.visible = false;
+        this.inputKey = "";
+        this.tags.push({
+          id:res.tag._id,
+          name:res.tag.name
+        })
+        this.newTag = {
+          name:'',
+          describe:''
+        }
+        this.visible = false;
+      })
+    },
   	tagRemove(index){
   		console.log(index)
   		this.tags.splice(index,1)
@@ -90,7 +152,7 @@ export default {
 	        }
 	      }).then((res)=>{
 	   			
-	        this.visible = true;
+	        
 	        if(res.data.length==0){
 	        	this.tagsList = [{
 	        		_id:false,
@@ -115,30 +177,10 @@ export default {
   	},
   	tagSelect(o){
   		if(!o._id){
-  			return this.$Modal.confirm({
-  				onOk:() => {
-  					this.utils.ajax({
-			        method: 'post',
-			        url: '/tags/add',
-			        data: {
-				    		name:this.newTag.name,
-				    		describe:this.newTag.describe
-				    	}
-			      }).then((res)=>{
-			      	this.tags.push({
-				  			id:res.tag._id,
-				  			name:res.tag.name
-				  		})
-				  		this.newTag = {
-				    		name:'',
-				    		describe:''
-				    	}
-				  		this.visible = false;
-			      })
-  				},
-  				title:"添加标签",
-  				render:h => h(tagForm)
-        })
+  			this.tagModal = true;
+        this.visible = false;
+        this.tagForm.name = this.inputKey;
+        return;
   		}
   		this.tags.push({
   			id:o._id,
@@ -151,7 +193,7 @@ export default {
   		console.log(e)
   	},
   	blur(e) {
-  		console.log(e)
+  		this.visible = false;
   	},
     handleOpen () {
       this.visible = true;

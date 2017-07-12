@@ -74,13 +74,7 @@
     </div>
 </template>
 <script>
-  import { setUserInfo } from '../../vuex/actions/user_actions'
   export default {
-    vuex: {
-      actions: {
-        setUserInfo
-      }
-    },
   	data() {
       return {
         loginForm:{
@@ -109,6 +103,11 @@
             }
           }).then((res)=>{
             if(res.user){
+              this.$store.commit('isLogin',res.user);
+              this.utils.setCookie("userId",res.user.id);
+              //let url = this.$route.params.directUrl;
+              this.$router.push({ path: this.$route.params.directUrl||'/' }) 
+              //console.log(this.$route.params.directUrl)
               //this.setBaseInfo(res.user)
             }
           })

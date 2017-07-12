@@ -67,13 +67,15 @@ router.post('/auth/:action', function(req, res, next) {
 	        }
 	      })
 			}
+    }else if(action == "get"){
+    	
     }else{
     	res.json({
-				status: {
-          code: -1,
-          msg: '参数出错，请联系管理员'
-        }
-      })
+			status: {
+	          code: -1,
+	          msg: '参数出错，请联系管理员'
+	        }
+	      })
     }
 	},res)
 });

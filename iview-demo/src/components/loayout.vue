@@ -1,8 +1,6 @@
 <style lang="less" scoped>
     .layout{
         position: relative;
-        border-radius: 4px;
-        overflow: hidden;
     }
     .layout-breadcrumb{
         padding: 10px 15px 0;
@@ -10,7 +8,6 @@
     .layout-content{
         min-height: 200px;
         margin: 15px;
-        overflow: hidden;
         background: #fff;
         border-radius: 4px;
     }
@@ -28,6 +25,7 @@
         height: 100%;
         position: fixed;
         left: 0;
+        z-index: 9;
         transition: width .3s ease-in-out;
         &.active {
             width: 120px;
@@ -82,20 +80,20 @@
     <div class="layout" :class="{'layout-hide-text': !menuToggle}">
         <Row type="flex">
             <div class="layout-menu-left" :class="{active:menuToggle}" @mouseenter="menuShow" @mouseleave="menuHide">
-                <Menu :active-name="menu" theme="dark" width="auto">
+                <Menu :active-name="menu" theme="dark" width="auto" @on-select="menuTo">
                     <div class="layout-logo-left">
                         <img style="height:30px;" src="http://yangbinbin.duapp.com/images/logo_2016.png" alt="">
                     </div>
                     <Menu-item name="1">
-                        <Icon type="ios-navigate" :size="iconSize"></Icon>
-                        <span class="layout-text">文章</span>
+                        <Icon type="ios-home" :size="iconSize"></Icon>
+                        <span class="layout-text">主页</span>
                     </Menu-item>
                     <Menu-item name="2">
                         <Icon type="ios-keypad" :size="iconSize"></Icon>
                         <span class="layout-text">归档</span>
                     </Menu-item>
                     <Menu-item name="3">
-                        <Icon type="ios-analytics" :size="iconSize"></Icon>
+                        <Icon type="ios-person" :size="iconSize"></Icon>
                         <span class="layout-text">关于</span>
                     </Menu-item>
                 </Menu>
@@ -135,6 +133,11 @@
            
         },
         methods: {
+            menuTo(name){
+                var router = ['/',"/list","/about"];
+                this.$router.push(router[name-1])
+                // this.menu = name;
+            },
             menuShow () {
                 this.toggleBtnShow = true;
             },
