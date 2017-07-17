@@ -19,6 +19,7 @@ router.get('/day/query', function(req, res) {
 
   var start = moment(query.startDay).format("YYYY-MM-DD");
   var end = moment(query.endDay).format('YYYY-MM-DD');
+  console.log(start,end)
   F.co(function *() {
   	var article = yield M.article.find({
   		"$and":[
