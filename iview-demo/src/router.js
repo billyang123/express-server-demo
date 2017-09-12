@@ -11,6 +11,12 @@ const routers = [{
     },
     component: (resolve) => require(['./views/auth/index.vue'], resolve)
 },{
+    path: '/register',
+    meta: {
+        title: '注册账号'
+    },
+    component: (resolve) => require(['./views/auth/register.vue'], resolve)
+},{
     path: '/write',
     meta: {
         title: '写文章'

@@ -14,7 +14,7 @@
         <Card class="article-item" v-for="item in list" key="_id">
             <p slot="title">{{item.title}}</p>
             <p slot="extra" class="article-meta">
-                {{moment(item.createTime).fromNow()}} by {{item.user.name}}
+                {{moment(item.createTime).fromNow()}} by {{item.user && item.user.name}}
             </p>
             <p>摘要：{{item.abstract}} <a :href="'/article/'+item._id">查看详情</a></p>
             <div class="cart-foot">
@@ -34,7 +34,7 @@
             }
         },
         computed: {
-           
+
         },
         components: {
             LoayOut
@@ -54,7 +54,7 @@
             })
         },
         methods: {
-            
+
         }
     }
 </script>
