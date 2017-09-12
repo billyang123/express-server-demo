@@ -13,6 +13,7 @@ var app = express();
  * F 方法/变量
  */
 global.C = require('./config');
+global.U = require('./libs/utils');
 global.M = {};//model初始化
 global.D = __dirname;
 global.F = require(path.join(C.dir.controller, C.exceptFolder, 'funcs'));

@@ -92,6 +92,7 @@
         }
       };
     },
+
     methods: {
         handleLogin() {
           this.utils.ajax({
@@ -102,11 +103,15 @@
               password: this.loginForm.password
             }
           }).then((res)=>{
+						console.log(res)
             if(res.user){
               this.$store.commit('isLogin',res.user);
               this.utils.setCookie("userId",res.user.id);
+							this.utils.storage.set({
+								user:res.user
+							})
               //let url = this.$route.params.directUrl;
-              this.$router.push({ path: this.$route.params.directUrl||'/' }) 
+              this.$router.push({ path: this.$route.query.directUrl||'/' })
               //console.log(this.$route.params.directUrl)
               //this.setBaseInfo(res.user)
             }

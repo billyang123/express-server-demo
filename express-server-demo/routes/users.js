@@ -1,8 +1,28 @@
 var express = require('express');
 var router = express.Router();
 
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
+router.get('/list', function(req, res, next) {
+  F.co(function *() {
+    var users = yield M.users.find({});
+    res.json({
+      status:{
+        code:0
+      },
+      users:users
+    })
+  })
+});
+router.post('/mine', function(req, res, next) {
+  console.log(req.session.user);
+  F.co(function *() {
+    var user = yield M.users.findOne({_id:req.cookies.userId})
+    res.json({
+      status:{
+        code:0
+      },
+      users:user
+    })
+  })
 });
 router.post('/auth/:action', function(req, res, next) {
  	F.co(function *() {
@@ -16,7 +36,10 @@ router.post('/auth/:action', function(req, res, next) {
 			if(user = yield M.users.findOne(query)){
 				code = 0;
 				msg = "登录成功";
-				req.session.user = {
+        if(!req.session.user){
+          req.session.user = {}
+        }
+        var s_user = {
           id: user._id,
           avator: user.avator,
           name: user.name,
@@ -25,6 +48,7 @@ router.post('/auth/:action', function(req, res, next) {
           joinTime:user.joinTime,
           account:user.account
         };
+				req.session.user[user._id] = s_user
 			}else{
 				code = 1;
 				msg = "用户名或密码错误";
@@ -34,9 +58,9 @@ router.post('/auth/:action', function(req, res, next) {
           code: code,
           msg: msg,
         },
-        user:code===0?req.session.user:null
+        user:code===0?s_user:null
       })
-		} else if (query.action === 'out') {
+		} else if (action === 'out') {
       req.session.admin = null;
       res.json({
         status: {
@@ -52,6 +76,7 @@ router.post('/auth/:action', function(req, res, next) {
 	 			email:req.body.email,
 				avator:req.body.avator,
 	 		};
+
 			if(yield M.users.create(post)) {
 				res.json({
 					status: {
@@ -67,8 +92,28 @@ router.post('/auth/:action', function(req, res, next) {
 	        }
 	      })
 			}
-    }else if(action == "get"){
-    	
+    }else if(action == "update"){
+      post = {
+	 			name:req.body.name,
+	 			email:req.body.email,
+				avator:req.body.avator,
+	 		};
+			if(yield M.users.update(post)) {
+				res.json({
+          user:post,
+					status: {
+	          code: 0,
+	          msg: '修改成功'
+	        }
+				});
+			}else{
+				res.json({
+					status: {
+	          code: 1,
+	          msg: '修改失败，请联系管理员'
+	        }
+	      })
+			}
     }else{
     	res.json({
 			status: {

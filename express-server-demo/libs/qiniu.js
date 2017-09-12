@@ -16,6 +16,7 @@ var config = new qiniu.conf.Config();
 
 var formUploader = new qiniu.form_up.FormUploader(config);
 var putExtra = new qiniu.form_up.PutExtra();
+var bucketManager = new qiniu.rs.BucketManager(mac, config);
 
 
 function myUpload(localFile,callback){
@@ -33,6 +34,33 @@ function myUpload(localFile,callback){
   });
 
 }
+function deleteFile(keyArr,callback){
+  var deleteOperations = keyArr.map((key)=>{
+    return qiniu.rs.deleteOp(bucket, key)
+  })
+  bucketManager.batch(deleteOperations, function(err, respBody, respInfo) {
+    if (err) {
+      console.log(err);
+      //throw err;
+    } else {
+      // 200 is success, 298 is part success
+      callback && callback(respBody,respInfo)
+      // if (parseInt(respInfo.statusCode / 100) == 2) {
+      //   respBody.forEach(function(item) {
+      //     if (item.code == 200) {
+      //       console.log(item.code + "\tsuccess");
+      //     } else {
+      //       console.log(item.code + "\t" + item.data.error);
+      //     }
+      //   });
+      // } else {
+      //   console.log(respInfo.deleteusCode);
+      //   console.log(respBody);
+      // }
+    }
+  });
+}
 module.exports = {
-  upload:myUpload
+  upload:myUpload,
+  deleteFile:deleteFile
 }

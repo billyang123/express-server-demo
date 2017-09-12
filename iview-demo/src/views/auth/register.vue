@@ -15,13 +15,13 @@
               <Input type="password" v-model="loginForm.password" placeholder="密码" />
           </Form-item>
           <Form-item prop="name" label="姓名">
-              <Input type="text" v-model="loginForm.password" placeholder="姓名" />
+              <Input type="text" v-model="loginForm.name" placeholder="姓名" />
           </Form-item>
           <Form-item prop="email" label="邮箱">
-              <Input type="text" v-model="loginForm.password" placeholder="邮箱" />
+              <Input type="text" v-model="loginForm.email" placeholder="邮箱" />
           </Form-item>
           <Form-item label="头像">
-            <Upload action="http://127.0.0.1:3000/utils/upload">
+            <Upload action="http://127.0.0.1:3000/utils/upload" :on-remove="removeAvator" :on-success="handleSuccess">
                 <Button type="ghost" icon="ios-cloud-upload-outline">上传文件</Button>
             </Upload>
           </Form-item>
@@ -29,11 +29,6 @@
               <Button type="primary" @click="handleLogin">注册账号</Button>
           </Form-item>
       </Form>
-      <form id='editfile' method='post' action='http://127.0.0.1:3000/utils/upload' enctype='multipart/form-data'>
-          <input name="text" type="text"/>
-          选择图片：<input name="avatar" id='upfile' type='file'/>
-          <input type='submit' value='提交'/>
-      </form>
     </div>
 </template>
 <script>
@@ -42,7 +37,10 @@
       return {
         loginForm:{
           account: '',
-          password: ''
+          password: '',
+          name:'',
+          email:'',
+          avator:''
         },
         avator:'',
         rules:{
@@ -59,6 +57,23 @@
       };
     },
     methods: {
+        handleSuccess(v){
+          this.avator = v.path
+          console.log(v)
+        },
+        removeAvator(v){
+          this.utils.ajax({
+            method: 'post',
+            url: '/utils/deletefile',
+            data: {
+              keys:v.response.key
+            }
+          }).then((res)=>{
+            if(!res.status.code){
+              this.$Message.success('删除成功!')
+            }
+          })
+        },
         handleLogin() {
           this.utils.ajax({
             method: 'post',
@@ -68,7 +83,7 @@
               password: this.loginForm.password,
               name:this.loginForm.name,
               email:this.loginForm.email,
-              avator:this.avator
+              avator:this.loginForm.avator
             }
           }).then((res)=>{
             if(!res.status.code){

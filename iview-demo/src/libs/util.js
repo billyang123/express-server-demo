@@ -29,25 +29,41 @@ util.ajaxInit = (options)=>{
     // 这里提前处理返回的数据
 	    return data;
 	  }],
+    //withCredentials: true,
     headers: {
 	    'Content-Type': 'application/x-www-form-urlencoded'
 	  }
 	},options)
 	return axios.create(setting);
 }
-let localStorage = window.localStorage
-
-
-util.storeBaseInfo = (data) => {
-  localStorag.setItem('diandi_BaseInfo', JSON.stringify(data))
-}
-
-util.getStore = ()=>{
-	if (localStorage.getItem('diandi_BaseInfo')) {
-    let data = JSON.parse(localStorage.getItem('diandi_BaseInfo'))
-    return data;
+let storage = {
+  set:function(data,store){
+    if(!store) store = window.sessionStorage;
+    store.setItem('diandi_BaseInfo', JSON.stringify(data))
+  },
+  get:function(name,store){
+    if(!store) store = window.sessionStorage;
+    if (store.getItem('diandi_BaseInfo')) {
+      let data = JSON.parse(store.getItem('diandi_BaseInfo'))
+      if(name) return data[name]
+      return data;
+    }
+    return null
+  },
+  update:function(obj,store){
+    if(!store) store = window.sessionStorage;
+    if (store.getItem('diandi_BaseInfo')) {
+      let data = JSON.parse(store.getItem('diandi_BaseInfo'));
+      let newData = Object.assign({},data,obj);
+      store.setItem('diandi_BaseInfo',JSON.stringify(newData))
+    }
+  },
+  remove:function(store){
+    if(!store) store = window.sessionStorage;
+    store.removeItem('diandi_BaseInfo')
   }
 }
+util.storage = storage
 //设置cookie
 util.setCookie = function (cname, cvalue, exdays) {
     var d = new Date();
