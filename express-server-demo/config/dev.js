@@ -13,6 +13,9 @@ var
         pass: ''
       }
     },
+    upload:{
+      path:'./tmp'
+    },
     host: 'localhost',
     port: 27017,
     dir: { // 目录配置
@@ -21,7 +24,7 @@ var
       controller: path.resolve(beRoot, 'controllers'),
       resource: path.resolve(beRoot, '../iview-demo/resource')
     },
-    resourceFixUrl: 'http://localhost:8080/login', // 静态资源web访问修正路径
+    resourceFixUrl: 'http://127.0.0.1:8080/login', // 静态资源web访问修正路径
     exceptFolder: 'except' // model 和 controller 中read dir排除的目录名称
   };
 

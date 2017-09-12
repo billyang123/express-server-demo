@@ -33,7 +33,7 @@
                 @on-change="tagChange"
                 :remote-method="getTagRemote"
                 :loading="loading">
-                <Option v-for="option in tagOptions" :value="option.value" :key="new Date()">{{option.label}}</Option>
+                <Option v-for="option in tagOptions" :value="option.value" :key="option.value">{{option.label}}</Option>
             </Select>
             <Button type="primary" icon="ios-search" @click="tagModalShow"  v-show="showAddTag">添加新标签</Button>
 						<!-- <AutoComplete v-model="tagStr"></AutoComplete> -->
@@ -152,7 +152,7 @@
         })
       },
       tagChange(v){
-        
+
       },
       getTagRemote(query){
         if (query !== '') {
