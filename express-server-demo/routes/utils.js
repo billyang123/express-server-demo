@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 var fs = require('fs');
 var multiparty = require('multiparty');
-// var qiniu = require('qiniu');
+var qiniu = require('../libs/qiniu');
 //
 // qiniu.conf.ACCESS_KEY = 'vGLVjXkIytX-83w38x7rhST9';
 // qiniu.conf.SECRET_KEY = 'FZGuMCvwUzrmLIOxmdCD0JgpD5zmkvtB4SADGEYl'
@@ -37,41 +37,41 @@ router.get('/upload', function(req, res, next) {
 router.post('/upload',function (req, res, next) {
   var uploadDir = D+'/public/images/';
   var form = new multiparty.Form({uploadDir: uploadDir});
-  console.log(uploadDir)
   form.parse(req, function(err, fields, files) {
       if(err){
         console.log('parse error: ' + err);
       } else {
         console.log('parse files: ' + JSON.stringify(files,null,2));
         var inputFile = files.file[0];
-
         var uploadedPath = inputFile.path;
+        var ups = uploadedPath.split('/');
 
-        var ups = uploadedPath.split('/')
         var realName = ups[ups.length-1];
 
-        var dstPath = uploadDir +  realName;
+        qiniu.upload(inputFile.originalFilename,uploadedPath,function(err,ret){
+          res.json({
+            status:{
+              code:0
+            },
+            localPath:`/images/${realName}`,
+            path:`http://${C.qnStaticDomain}/${ret.key}`
+          })
+        })
         //重命名为真实文件名
-        fs.rename(uploadedPath, dstPath, function(err) {
-          if(err){
-            console.log('rename error: ' + err);
-          } else {
-            res.json({
-              status:{
-                code:0
-              },
-              url:`/images/${realName}`
-            })
-            console.log('rename ok');
-          }
-        });
+        // var dstPath = uploadDir +  realName;
+        // fs.rename(uploadedPath, dstPath, function(err) {
+        //   if(err){
+        //     console.log('rename error: ' + err);
+        //   } else {
+        //     res.json({
+        //       status:{
+        //         code:0
+        //       },
+        //       url:`/images/${realName}`
+        //     })
+        //   }
+        // });
       }
   })
-    //res.json('http://st2.originoo.cn/2627021/9638/i/950/depositphotos_96385166-stock-photo-growing-sprout-beginning-of-a.jpg')
-    // if (req.file) {
-    //     res.json(req.file)
-    //     console.log(req.file);
-    //     console.log(req.body);
-    // }
 });
 module.exports = router;
