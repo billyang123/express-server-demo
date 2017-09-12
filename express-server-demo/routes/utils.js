@@ -35,7 +35,7 @@ router.get('/upload', function(req, res, next) {
   res.send('respond with a resource');
 });
 router.post('/upload',function (req, res, next) {
-  var uploadDir = D+'/public/images/';
+  var uploadDir = D+C.upload.path;
   var form = new multiparty.Form({uploadDir: uploadDir});
   form.parse(req, function(err, fields, files) {
       if(err){
@@ -44,17 +44,16 @@ router.post('/upload',function (req, res, next) {
         console.log('parse files: ' + JSON.stringify(files,null,2));
         var inputFile = files.file[0];
         var uploadedPath = inputFile.path;
-        var ups = uploadedPath.split('/');
-
-        var realName = ups[ups.length-1];
-
-        qiniu.upload(inputFile.originalFilename,uploadedPath,function(err,ret){
+        // var ups = uploadedPath.split('/');
+        // var realName = ups[ups.length-1];
+        qiniu.upload(uploadedPath,function(ret,info){
           res.json({
             status:{
               code:0
             },
-            localPath:`/images/${realName}`,
-            path:`http://${C.qnStaticDomain}/${ret.key}`
+            localPath:inputFile.originalFilename,
+            size:inputFile.size,
+            path:`http://${C.upload.qnStaticDomain}/${ret.key}`
           })
         })
         //重命名为真实文件名

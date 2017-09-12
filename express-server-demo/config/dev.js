@@ -14,7 +14,8 @@ var
       }
     },
     upload:{
-      path:'./tmp'
+      qnStaticDomain:"7oxjkx.com1.z0.glb.clouddn.com",
+      path:'/public/images/'
     },
     host: 'localhost',
     port: 27017,

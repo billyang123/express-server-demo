@@ -1,46 +1,37 @@
 var qiniu = require("qiniu");
-var qnStaticDomain = "7xv0yi.com2.z0.glb.clouddn.com";
+var qnStaticDomain = "7oxjkx.com1.z0.glb.clouddn.com";
 var bucket = 'ybbtest';
+var accessKey = 'vGLVjXkIytX-83w38x7rhST9uITxdYVkbodF_TFe';
+var secretKey = 'FZGuMCvwUzrmLIOxmdCD0JgpD5zmkvtB4SADGEYl';
 //需要填写你的 Access Key 和 Secret Key
-qiniu.conf.ACCESS_KEY = 'vGLVjXkIytX-83w38x7rhST9uITxdYVkbodF_TFe';
-qiniu.conf.SECRET_KEY = 'FZGuMCvwUzrmLIOxmdCD0JgpD5zmkvtB4SADGEYl';
-
-
-//构建上传策略函数
-function uptoken(bucket, key) {
-  console.log(bucket+":"+key)
-  var putPolicy = new qiniu.rs.PutPolicy(bucket+":"+key);
-
-  //putPolicy.callbackUrl = 'http://your.domain.com/callback';
-  //putPolicy.callbackBody = 'filename=$(fname)&filesize=$(fsize)';
-
-  return putPolicy.token();
+// qiniu.conf.ACCESS_KEY = accessKey;
+// qiniu.conf.SECRET_KEY = accessKey;
+var mac = new qiniu.auth.digest.Mac(accessKey, secretKey);
+var options = {
+  scope: bucket,
 }
-//构造上传函数
-function uploadFile(uptoken, key, localFile,callback) {
-  var extra = new qiniu.io.PutExtra();
-  console.log(uptoken, key, localFile);
-    qiniu.io.putFile(uptoken, key, localFile, extra, function(err, ret) {
-      if(!err) {
-        // 上传成功， 处理返回值
-        console.log(ret.hash, ret.key, ret.persistentId);
-      } else {
-        // 上传失败， 处理返回代码
-        console.log(err);
-      }
-      callback && callback(err, ret)
-  });
-}
+var putPolicy = new qiniu.rs.PutPolicy(options);
+var uploadToken = putPolicy.uploadToken(mac);
+var config = new qiniu.conf.Config();
 
-//调用uploadFile上传
-//uploadFile(token, key, filePath);
+var formUploader = new qiniu.form_up.FormUploader(config);
+var putExtra = new qiniu.form_up.PutExtra();
 
 
-function myUpload(key, filePath,callback){
+function myUpload(localFile,callback){
 	//生成上传 Token
-	var token = uptoken(bucket, key);
-	console.log(token)
-	uploadFile(token, key, filePath,callback);
+  console.log(uploadToken)
+	formUploader.putFile(uploadToken, null, localFile, putExtra, function(respErr,respBody, respInfo) {
+    if (respErr) {
+      throw respErr;
+    }
+    if (respInfo.statusCode == 200) {
+      callback(respBody,respInfo)
+    } else {
+      callback(respBody,respInfo)
+    }
+  });
+
 }
 module.exports = {
   upload:myUpload
