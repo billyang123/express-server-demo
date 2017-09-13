@@ -46,5 +46,11 @@ const routers = [{
         title: '关于'
     },
     component: (resolve) => require(['./views/about/index.vue'], resolve)
+},{
+    path: '/admin',
+    meta: {
+        title: '管理员'
+    },
+    component: (resolve) => require(['./views/admin/index.vue'], resolve)
 }];
 export default routers;

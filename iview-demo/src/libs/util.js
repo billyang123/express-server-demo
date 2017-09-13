@@ -14,7 +14,7 @@ const ajaxUrl = env === 'development' ?
     'http://127.0.0.1:3000' :
     env === 'production' ?
     '' :
-    'https://debug.url.com';
+    'http://127.0.0.1:3000';
 util.ajaxInit = (options)=>{
 	let setting = Object.assign({},{
     baseURL: ajaxUrl,
@@ -84,12 +84,16 @@ util.getCookie = function (cname) {
     }
     return "";
 }
-util.checkLogin = function () {
-    var user = this.getCookie("user");
+util.checkLogin = function (comp) {
+    var user = this.getCookie("userId");
     if (user != "") {
         return true;
     } else {
+        comp.$router.push({ path: '/login',query:{directUrl:comp.$route.fullPath} })
         return false;
     }
+}
+util.getCurUser = function(){
+  return util.storage.get('user');
 }
 export default util;

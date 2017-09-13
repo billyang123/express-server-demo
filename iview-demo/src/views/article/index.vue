@@ -1,5 +1,5 @@
 <style lang="less" scoped>
-    
+
 </style>
 <template>
     <LoayOut menu="－1">
@@ -16,7 +16,7 @@
             }
         },
         computed: {
-           
+
         },
         components: {
             LoayOut,
@@ -25,7 +25,7 @@
         created(){
            	this.utils.ajax({
 				method: 'get',
-				url: '/article/query',
+				url: '/api/article/query',
 				params: {
 				  _id: this.$route.params.id
 				}
@@ -34,10 +34,10 @@
           	})
         },
         ready(){
-        	
+
         },
         methods: {
-            
+
         }
     }
 </script>

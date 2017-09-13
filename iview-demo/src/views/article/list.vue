@@ -47,7 +47,7 @@
                 border-radius: 50%;
                 left: -15px;
                 top: 14px;
-                transition:all 0.4s ease-in-out; 
+                transition:all 0.4s ease-in-out;
             }
             .ptime {
                 position: absolute;
@@ -55,7 +55,7 @@
                 top: 12px;
                 color: #333;
                 font-size: 14px;
-                transition:all 0.4s ease-in-out; 
+                transition:all 0.4s ease-in-out;
             }
             &.list-item-m {
                 .ptime {
@@ -65,7 +65,7 @@
                     font-weight: bold;
                 }
                 &:after {
-                    
+
                     width: 20px;
                     height: 20px;
                     left: -18px;
@@ -121,7 +121,7 @@
             }
         },
         computed: {
-           
+
         },
         components: {
             LoayOut
@@ -134,13 +134,13 @@
             // })
             this.utils.ajax({
                 method: 'get',
-                url: '/article/query'
+                url: '/api/article/query'
             }).then((res)=>{
                 this.list = this.timelineDo(res.data);
             })
         },
         ready(){
-        	
+
         },
         methods: {
             timelineDo(data){
@@ -165,10 +165,10 @@
         			end = _Day.end;
         		}else{
         			start = end = Date.now();
-        		}	
+        		}
         		this.utils.ajax({
 					method: 'get',
-					url: '/article/day/query',
+					url: '/api/article/day/query',
 					params: {
 					  startDay:start,
 					  endDay:end

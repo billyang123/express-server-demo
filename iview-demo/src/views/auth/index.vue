@@ -97,7 +97,7 @@
         handleLogin() {
           this.utils.ajax({
             method: 'post',
-            url: '/users/auth/in',
+            url: '/api/users/auth/in',
             data: {
               account: this.loginForm.account,
               password: this.loginForm.password

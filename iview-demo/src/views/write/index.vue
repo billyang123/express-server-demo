@@ -141,7 +141,7 @@
       addtagok(){
         this.utils.ajax({
           method: 'post',
-          url: '/tags/add',
+          url: '/api/tags/add',
           data: {
             name:this.tagForm.name,
             describe:this.tagForm.describe
@@ -159,7 +159,7 @@
           this.loading = true;
           this.utils.ajax({
             method: 'get',
-            url: '/tags/query',
+            url: '/api/tags/query',
             params: {
               key: query
             }
@@ -189,7 +189,7 @@
             if (valid) {
               this.utils.ajax({
                 method: 'post',
-                url: '/article/add',
+                url: '/api/article/add',
                 data: {
                   title:this.writeForm.title,
                   abstract: this.writeForm.abstract,

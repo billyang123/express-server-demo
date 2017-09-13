@@ -10,13 +10,13 @@
     <div class="about-box">
 
       <h3 slot="title">关于我</h3>
-      <p>姓名：杨鑫</p>
-      <p>职业：前端工程师</p>
-      <p>Q Q：289755081</p>
-      <p>Email：yangbinbin_1226@126.com</p>
-      <p>爱好：旅游、运动</p>
-      <p>人生格言：成功并非重要的事，重要的是努力。——泰尔多尔</p>
-      <p class="intro">自我评价：一个在前端领域打拼了几年，从开始的不懂到对前端技术有所研究，熟悉前端一些技术栈，本人喜欢追求独一无二的生活，个人主义还是有一点的，但对人友善，喜欢与人交心。</p>
+      <p v-if="user.name">姓名：{{user.name}}</p>
+      <p v-if="user.profession">职业：{{user.profession}}</p>
+      <p v-if="user.QQ">Q Q：{{user.QQ}}</p>
+      <p v-if="user.email">Email：{{user.email}}</p>
+      <p v-if="user.hobby">爱好：{{user.hobby}}</p>
+      <p v-if="user.motto">人生格言：{{user.motto}}</p>
+      <p class="intro" v-if="user.selfAssessment">自我评价：{{user.selfAssessment}}</p>
 
     </div>
 </LoayOut>
@@ -26,14 +26,18 @@ import LoayOut from '../../components/loayout'
   export default {
   	data() {
       return {
-        
+				user:{}
       };
     },
     components: {
         LoayOut
     },
+		created(){
+			this.utils.checkLogin(this)
+			this.user = this.utils.getCurUser();
+		},
     methods: {
-       
+
     }
   };
 </script>

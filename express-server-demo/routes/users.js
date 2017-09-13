@@ -51,7 +51,11 @@ router.post('/auth/:action', function(req, res, next) {
           isAdmin:user.isAdmin,
           joinTime:user.joinTime,
           account:user.account,
-          session:req.session
+          hobby:user.hobby,
+          motto:user.motto,
+          selfAssessment:user.selfAssessment,
+          profession:user.profession,
+          QQ:user.QQ,
         };
 				req.session.userId = s_user.id
 			}else{
@@ -80,6 +84,11 @@ router.post('/auth/:action', function(req, res, next) {
 	 			name:req.body.name,
 	 			email:req.body.email,
 				avator:req.body.avator,
+        hobby:req.body.hobby,
+        motto:req.body.motto,
+        selfAssessment:req.body.selfAssessment,
+        profession:req.body.profession,
+        QQ:req.body.QQ
 	 		};
 
 			if(yield M.users.create(post)) {
@@ -99,11 +108,19 @@ router.post('/auth/:action', function(req, res, next) {
 			}
     }else if(action == "update"){
       post = {
+        account:req.body.account,
 	 			name:req.body.name,
 	 			email:req.body.email,
 				avator:req.body.avator,
+        hobby:req.body.hobby,
+        motto:req.body.motto,
+        selfAssessment:req.body.selfAssessment,
+        profession:req.body.profession,
+        QQ:req.body.QQ
 	 		};
-			if(yield M.users.update(post)) {
+			if(yield M.users.update({_id:req.body.id},post)) {
+        console.log(req.body.id)
+        post.id = req.body.id;
 				res.json({
           user:post,
 					status: {

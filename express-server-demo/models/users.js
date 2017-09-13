@@ -1,5 +1,5 @@
 module.exports = function (Schema) {
-  return { 
+  return {
 	  account:String,
 		password:String,
 		name:String,
@@ -11,6 +11,11 @@ module.exports = function (Schema) {
 			type:Date,
 			default:Date.now
 		},
+    hobby:String,
+    motto:String,
+    selfAssessment:String,
+    profession:String,
+    QQ:String,
 		email:String,
 		avator:String,
 		isAdmin:{

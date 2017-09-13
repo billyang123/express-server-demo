@@ -57,8 +57,13 @@ app.all('*', function(req, res, next) {
     res.header("Content-Type", "application/json;charset=utf-8");
     next();
 });
+var htmlRouter = ['/index'];
 for(r in routes){
-	app.use(r, routes[r]);
+  if(htmlRouter.indexOf(r)>-1){
+    app.use(r, routes[r]);
+  }else{
+    app.use('/api'+r, routes[r]);
+  }
 }
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

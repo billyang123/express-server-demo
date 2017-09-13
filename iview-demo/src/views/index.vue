@@ -44,7 +44,7 @@
             console.log(this.$store.state.user)
            this.utils.ajax({
                 method: 'get',
-                url: '/article/query',
+                url: '/api/article/query',
                 params: {
                     //updateTime:-1
                   // _id: this.$route.params.id
