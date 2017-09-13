@@ -15,4 +15,9 @@ router.get('/queryTags', function(req, res) {
     })
   },res)
 });
+router.get('/', function(req, res) {
+  res.type('html')
+  res.header("Content-Type", "text/html");
+  res.render('index', {title: "点滴"});
+});
 module.exports = router;

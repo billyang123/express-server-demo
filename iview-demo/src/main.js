@@ -8,6 +8,7 @@ import App from './app.vue';
 import 'iview/dist/styles/iview.css';
 
 import VueParticles from 'vue-particles';
+
 Vue.use(VueParticles);
 
 Vue.use(VueRouter);

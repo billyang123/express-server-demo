@@ -16,7 +16,7 @@ const routers = [{
         title: '注册账号'
     },
     component: (resolve) => require(['./views/auth/register.vue'], resolve)
-},{
+},,{
     path: '/settings',
     meta: {
         title: '账号设置'

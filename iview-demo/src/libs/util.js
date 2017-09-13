@@ -13,7 +13,7 @@ util.title = function(title) {
 const ajaxUrl = env === 'development' ?
     'http://127.0.0.1:3000' :
     env === 'production' ?
-    'https://www.url.com' :
+    '' :
     'https://debug.url.com';
 util.ajaxInit = (options)=>{
 	let setting = Object.assign({},{

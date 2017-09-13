@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 router.get('/list', function(req, res, next) {
+  req.session.abs = 9823749
   F.co(function *() {
     var users = yield M.users.find({});
     res.json({
@@ -12,19 +13,22 @@ router.get('/list', function(req, res, next) {
     })
   })
 });
-router.post('/mine', function(req, res, next) {
-  console.log(req.session.user);
+router.get('/mine', function(req, res, next) {
+  console.log(req.session.absc)
+  req.session.absc = 888
   F.co(function *() {
     var user = yield M.users.findOne({_id:req.cookies.userId})
     res.json({
       status:{
         code:0
       },
+      session:req.session,
       users:user
     })
   })
 });
 router.post('/auth/:action', function(req, res, next) {
+  req.session.logining = true
  	F.co(function *() {
  		var action = req.params.action;
  		var user,code,msg,query,post;
@@ -46,9 +50,10 @@ router.post('/auth/:action', function(req, res, next) {
           email: user.email,
           isAdmin:user.isAdmin,
           joinTime:user.joinTime,
-          account:user.account
+          account:user.account,
+          session:req.session
         };
-				req.session.user[user._id] = s_user
+				req.session.userId = s_user.id
 			}else{
 				code = 1;
 				msg = "用户名或密码错误";
