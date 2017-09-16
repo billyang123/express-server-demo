@@ -1,5 +1,12 @@
-<style lang="less" scoped>
 .article-md{
+    margin: 0 auto;
+    background: #000;
+    font-family: Georgia, Palatino, serif;
+    color: #EEE;
+    line-height: 1;
+    max-width: 960px;
+    padding: 30px;
+
     h1, h2, h3, h4 {
         font-weight: 400;
     }
@@ -250,41 +257,3 @@
       border: 0;
     }
 }
-
-</style>
-<template>
-    <article>
-    	<h1>{{content.title}}</h1>
-    	<p>{{content.abstract}}</p>
-    	<div class="article-content article-md" v-html="dMarkHtml" v-highlight>
-    	</div>
-    </article>
-</template>
-<script>
-	import Vue from 'vue';
-	import MarkdownIt from 'markdown-it'
-    var md = new MarkdownIt({
-      langPrefix:   '',
-    });
-    export default {
-        data () {
-            return {
-
-                // s_markdown: markdown,
-            }
-        },
-        components: {},
-        computed: {
-           dMarkHtml(){
-              return md.render(this.content.content||'');
-           }
-        },
-        props:["content"],
-        created(){
-           // console.log(console.log(marked('I am using __markdown__.'));)
-        },
-        methods: {
-
-        }
-    }
-</script>

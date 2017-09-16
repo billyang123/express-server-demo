@@ -163,11 +163,13 @@
 			},
 			handleRemove (file) {
 					// 从 upload 实例删除数据
+					const arr = file.url.split('/');
+
 					this.utils.ajax({
             method: 'post',
-            url: '/api/utils/deletefile',
+            url: '/api/utils/delQiniuFile',
             data: {
-              keys:file.name
+              keys:arr[arr.length-1]
             }
           }).then((res)=>{
             if(!res.status.code){

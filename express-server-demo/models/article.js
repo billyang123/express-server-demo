@@ -1,5 +1,5 @@
 module.exports = function (Schema) {
-  return {  
+  return {
 	  	title:String,
 		abstract: String,
 		content:String,
@@ -25,7 +25,7 @@ module.exports = function (Schema) {
 			type : Schema.Types.ObjectId,
 			ref : 'users'
 		},
-		category:{
+		cate:{
 			type : Schema.Types.ObjectId,
 			ref : 'category'
 		}

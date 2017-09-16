@@ -45,6 +45,7 @@ var utilsFns = function(schema,action,body,res,pushObj){
 				});
 			}
 		}else if(action == "delete"){
+			console.log(body.id);
 			if(yield M[schema].remove({_id:body.id})) {
 				res.json({
 					status: {
@@ -66,6 +67,7 @@ var utilsFns = function(schema,action,body,res,pushObj){
 }
 
 router.get('/category', function(req, res) {
+	console.log(M);
 	var query = req.query;
   F.co(function *() {
   	var category = yield M.category.find(query);
@@ -84,6 +86,26 @@ router.post('/category/:action', function(req, res) {
 	var post = {}
 
   utilsFns('category',action,body,res,['name','describe'])
+})
+router.get('/tags', function(req, res) {
+	var query = req.query;
+	F.co(function *() {
+	 var tags = yield M.tags.find(query);
+	 res.json({
+			status: {
+				code: 0,
+				msg: ''
+			},
+			data:tags
+		})
+	},res)
+})
+router.post('/tags/:action', function(req, res) {
+	var body = req.body;
+	var action = req.params.action;
+	var post = {}
+
+  utilsFns('tags',action,body,res,['name','describe'])
 })
 router.get('/article', function(req, res) {
 	var query = req.query;
@@ -124,19 +146,7 @@ router.get('/medias', function(req, res) {
 		})
 	},res)
 })
-router.get('/tags', function(req, res) {
-	var query = req.query;
-	F.co(function *() {
-	 var tags = yield M.tags.find(query);
-	 res.json({
-			status: {
-				code: 0,
-				msg: ''
-			},
-			data:tags
-		})
-	},res)
-})
+
 router.get('/users', function(req, res) {
 	var query = req.query;
 	F.co(function *() {

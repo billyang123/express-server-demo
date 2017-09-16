@@ -38,6 +38,7 @@ function deleteFile(keyArr,callback){
   var deleteOperations = keyArr.map((key)=>{
     return qiniu.rs.deleteOp(bucket, key)
   })
+  console.log(keyArr,deleteOperations);
   bucketManager.batch(deleteOperations, function(err, respBody, respInfo) {
     if (err) {
       console.log(err);

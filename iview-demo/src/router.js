@@ -27,7 +27,13 @@ const routers = [{
     meta: {
         title: '写文章'
     },
-    component: (resolve) => require(['./views/write/index.vue'], resolve)
+    component: (resolve) => require(['./views/article/add.vue'], resolve)
+},{
+    path: '/write/:articleId',
+    meta: {
+        title: '写文章'
+    },
+    component: (resolve) => require(['./views/article/update.vue'], resolve)
 },{
     path: '/article/:id',
     meta: {

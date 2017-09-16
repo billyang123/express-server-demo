@@ -1,15 +1,33 @@
 <style lang="less" scoped>
-
+  .admin-box {
+    width: 1024px;
+    margin: 30px auto;
+  }
+  .title {
+    margin-bottom: 20px;
+  }
+  .addCategory {
+    margin-bottom: 20px;
+    .ivu-btn {
+      margin-bottom: 20px;
+    }
+  }
 </style>
 <template>
-  <div>
+  <div class="admin-box">
     <div class="addCategory">
-      <Button icon="ios-plus-empty" type="dashed" size="small" @click="handleAdd('cat')">添加类别</Button>
-      <Table :columns="cateColumns" :data="categoryList"></Table>
+      <h2 class="title">Category</h2>
+      <Button icon="ios-plus-empty" type="dashed" size="small" @click="addCat('category')">添加{{cfg.category.name}}</Button>
+      <Table :columns="cateColumns" :data="catList['category']"></Table>
+    </div>
+    <div class="addCategory">
+      <h2 class="title">tags</h2>
+      <Button icon="ios-plus-empty" type="dashed" size="small" @click="addCat('tags')">添加{{cfg.tags.name}}</Button>
+      <Table :columns="cateColumns" :data="catList['tags']"></Table>
     </div>
     <Modal
         v-model="catModalShow"
-        title="添加类别"
+        :title="catModalTitle"
         @on-ok="onOk"
         @on-cancel="cancel">
         <Form :model="catModalForm" :rules="catModalFormRule">
@@ -28,8 +46,30 @@
     export default {
         data () {
             return {
-                curCatModal:'cat',
+                cfg:{
+                  category:{
+                    name:'分类'
+                  },
+                  tags:{
+                    name:'标签'
+                  }
+                },
+                catModalTitle:'添加类别',
+                catOptionType:'add',
+                catList:{
+                  category:[],
+                  tags:[]
+                },
+                catCurType:'category',
+                catModalForm:{
+                  name:'',
+                  describe:''
+                },
                 cateColumns:[
+                  {
+                    title: 'ID',
+                    key: '_id',
+                  },
                   {
                     title: '类名',
                     key: 'name',
@@ -54,7 +94,7 @@
                                 },
                                 on: {
                                     click: () => {
-                                        this.handleEdit('cat',params.index)
+                                        this.updateCat(this.catCurType,params.index)
                                     }
                                 }
                             }, '编辑'),
@@ -66,7 +106,7 @@
                                 on: {
                                     click: () => {
 
-                                      this.handleDel('cat',params.index)
+                                      this.delCat(this.catCurType,params.index)
                                     }
                                 }
                             }, '删除')
@@ -74,12 +114,7 @@
                     }
                   }
                 ],
-               categoryList:[],
-               catModalShow:false,
-               catModalForm:{
-                 name:'',
-                 describe:''
-               },
+                catModalShow:false,
                catModalFormRule:{
                  name: [
                      { required: true, message: '请填写分类名称', trigger: 'blur' }
@@ -98,71 +133,80 @@
 
         },
         created(){
-           	this.getCatList()
+           	this.getCatList('category')
+            this.getCatList('tags')
         },
         ready(){
 
         },
         methods: {
-          getCatList(){
+          getCatList(type){
             this.utils.ajax({
       				method: 'get',
-      				url: '/api/admin/category'
+      				url: `/api/admin/${type}`
       			}).then((res)=>{
-      				this.categoryList = res.data;
+      				this.catList[type] = res.data;
+              console.log(this.catList);
           	})
           },
+          addCat(type){
+            this.catModalTitle = `添加${this.cfg[type].name}`
+            this.catCurType = type;
+            this.catModalForm  = {
+              name:'',
+              describe:''
+            }
+            this.catOptionType = "add";
+            this.catModalShow = true;
+          },
+          updateCat(type,index){
+            this.catModalTitle = `更新${this.cfg[type].name}`
+            this.catCurType = type;
+            this.catModalForm  = this.catList[type][index];
+            this.catOptionType = "update";
+            this.catModalShow = true;
+          },
+          delCat(type,index){
+            this.catModalTitle = `删除${this.cfg[type].name}`
+            this.catCurType = type;
+            this.catModalForm  = this.catList[type][index];
+            this.catOptionType = "delete";
+            this.catModalShow = true;
+          },
           onOk(){
-            this.utils.ajax({
-      				method: 'post',
-      				url: '/api/admin/category/add',
-              data:{
+            let data = {},successTxt="保存成功"
+            if(this.catOptionType == "add"){
+              data = {
                 name:this.catModalForm.name,
                 describe:this.catModalForm.describe
               }
-      			}).then((res)=>{
-              if(!res.status.code){
-                this.$Message.success('保存成功!')
-                this.getCatList()
+              successTxt = `添加${this.cfg[type].name}成功`
+            }else if(this.catOptionType == "delete"){
+              data = {
+                id:this.catModalForm._id
               }
-          	})
+              successTxt = `删除${this.cfg[type].name}成功`
+            }else if(this.catOptionType == "update"){
+              data = {
+                id:this.catModalForm._id,
+                name:this.catModalForm.name,
+                describe:this.catModalForm.describe
+              }
+              successTxt = `修改${this.cfg[type].name}成功`
+            }
+            this.utils.ajax({
+              method: 'post',
+              url: `/api/admin/${this.catCurType}/${this.catOptionType}`,
+              data:data
+            }).then((res)=>{
+              if(!res.status.code){
+                this.$Message.success(successTxt)
+                this.getCatList(this.catCurType)
+              }
+            })
           },
           cancel(){
 
-          },
-          handleDel(t,index){
-            this.$Modal.warning({
-                title: '警告',
-                content: '确定删除！',
-                onOk:()=>{
-                  this.utils.ajax({
-            				method: 'post',
-            				url: '/api/admin/category/delete',
-                    data:{
-                      id:this.catModalForm._id
-                    }
-            			}).then((res)=>{
-                    if(!res.status.code){
-                      this.$Message.success('删除成功!')
-                      this.getCatList()
-                    }
-                	})
-                }
-            });
-          },
-          handleEdit(t,index){
-            this.curCatModal = t;
-            this.catModalForm = this.categoryList[index];
-            if(t == 'cat'){
-              this.catModalShow = true;
-            }
-          },
-          handleAdd(e){
-            console.log(e);
-            this.curCatModal = e;
-            if(e == 'cat'){
-              this.catModalShow = true;
-            }
           }
         }
     }

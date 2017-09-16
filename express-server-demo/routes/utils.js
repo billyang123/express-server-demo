@@ -36,7 +36,9 @@ router.post('/upload',function (req, res, next) {
 });
 router.post('/delQiniuFile', function(req, res, next) {
   var keysArr = req.query.keys.split(',');
-  qiniu.deleteFile(keysArr,function(d){
+  console.log(keysArr);
+  qiniu.deleteFile(keysArr,function(d,r){
+    console.log(d,r);
     res.json({
       status:{
         code:0,

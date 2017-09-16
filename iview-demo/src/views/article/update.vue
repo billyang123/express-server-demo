@@ -10,21 +10,21 @@
   }
 </style>
 <template>
-    <article-write type="add"/>
+    <article-write type="update" :articleId="articleId"/>
 </template>
 <script>
   import ArticleUp from '../../components/articleUp';
   export default {
   	data() {
       return {
-
+        articleId:null
       };
     },
     components: {
     	'article-write':ArticleUp
     },
     created(){
-
+      this.articleId = this.$route.params.articleId;
     },
     watch:{
 
