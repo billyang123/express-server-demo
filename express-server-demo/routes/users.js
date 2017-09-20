@@ -13,6 +13,18 @@ router.get('/list', function(req, res, next) {
     })
   })
 });
+router.get('/about/:id', function(req, res, next) {
+  F.co(function *() {
+    var users = yield M.users.findOne({_id:req.params.id});
+    const {account,name,email,avator,selfAssessment,motto,hobby,QQ,profession,level,isAdmin,joinTime,posts} = users;
+    res.json({
+      status:{
+        code:0
+      },
+      user:{account,name,email,avator,selfAssessment,motto,hobby,QQ,profession,level,isAdmin,joinTime,posts}
+    })
+  })
+});
 router.get('/mine', function(req, res, next) {
   console.log(req.session.absc)
   req.session.absc = 888

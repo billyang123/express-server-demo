@@ -85,7 +85,7 @@ util.getCookie = function (cname) {
     return "";
 }
 util.checkLogin = function (comp) {
-    var user = this.getCookie("userId");
+    var user = this.getCookie("userId") && util.storage.get('user');
     if (user != "") {
         return true;
     } else {
@@ -93,7 +93,13 @@ util.checkLogin = function (comp) {
         return false;
     }
 }
-util.getCurUser = function(){
-  return util.storage.get('user');
+util.getCurUser = function(comp,isLo){
+  let user = util.storage.get('user');
+  if(user){
+      return util.storage.get('user');
+  }else{
+    isLo && comp.$router.push({ path: '/login',query:{directUrl:comp.$route.fullPath} })
+    return null;
+  }
 }
 export default util;

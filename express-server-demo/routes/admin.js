@@ -10,6 +10,7 @@ var utilsFns = function(schema,action,body,res,pushObj){
 			for(var i=0;i< pushObj.length;i++){
 				post[pushObj[i]] = body[pushObj[i]]
 			}
+			post.id = getUID('admin');
 			if(yield M[schema].create(post)){
 				res.json({
 					status: {
@@ -29,7 +30,7 @@ var utilsFns = function(schema,action,body,res,pushObj){
 			for(var i=0;i< pushObj.length;i++){
 				post[pushObj[i]] = body[pushObj[i]]
 			}
-			if(yield M[schema].update({_id:body.id},post)) {
+			if(yield M[schema].update({id:body.id},{$set:post})) {
 				res.json({
 					status: {
 	          code: 0,
@@ -45,8 +46,7 @@ var utilsFns = function(schema,action,body,res,pushObj){
 				});
 			}
 		}else if(action == "delete"){
-			console.log(body.id);
-			if(yield M[schema].remove({_id:body.id})) {
+			if(yield M[schema].remove({id:body.id})) {
 				res.json({
 					status: {
 	          code: 0,
@@ -110,7 +110,7 @@ router.post('/tags/:action', function(req, res) {
 router.get('/article', function(req, res) {
 	var query = req.query;
   F.co(function *() {
-  	var article = yield M.article.find(query);
+  	var article = yield M.article.find(query).populate(['user','tags','cate']).exec();;
   	res.json({
       status: {
         code: 0,

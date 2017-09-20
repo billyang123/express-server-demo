@@ -121,7 +121,7 @@
     created(){
 			this.utils.checkLogin(this);
 			this.mavonEditor = mavonEditor.mavonEditor
-			this.user = this.utils.getCurUser();
+			this.user = this.utils.getCurUser(this);
 			this.getCategoryList();
 			if(this.type == "update"){
 				this.getArticle(this.articleId)
@@ -141,7 +141,10 @@
       getArticle(id){
         this.utils.ajax({
           method: 'get',
-          url: `/api/article/query/${id}`
+          url: `/api/article/query`,
+          data:{
+            _id:id
+          }
         }).then((res)=>{
 					var art = res.data[0]
           this.article = art;
@@ -157,11 +160,11 @@
 							value:item._id
 						}
 					});
-          console.log(art.cate._id);
+          console.log(art);
 					this.writeForm = {
 						title:art.title,
 						abstract:art.abstract,
-						cate:art.cate._id,
+						cate:art.cate?art.cate._id:null,
 						tags:this.defaultTags.value,
 						content:art.content
 					}
@@ -176,7 +179,12 @@
             describe:this.tagForm.describe
           }
         }).then((res)=>{
-          this.tagOptions.push(res.tag)
+          this.tagOptions.push({
+            value:res.tag._id,
+            label:res.tag.name
+          })
+          this.writeForm.tags.push(res.tag._id);
+          this.defaultTags.label.push(res.tag.name)
           this.$Message.success(`添加标签(${res.tag.name})成功`);
         })
       },
@@ -232,7 +240,7 @@
 							cate:this.writeForm.cate
 						}
 						if(this.type == "update"){
-							data._id = this.articleId;
+							data.id = this.article.id;
 						}
             if (valid) {
 							console.log(data);

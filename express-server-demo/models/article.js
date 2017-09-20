@@ -1,5 +1,6 @@
 module.exports = function (Schema) {
   return {
+    id:String,
 	  	title:String,
 		abstract: String,
 		content:String,

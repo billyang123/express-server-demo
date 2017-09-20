@@ -31,7 +31,7 @@ const routers = [{
 },{
     path: '/write/:articleId',
     meta: {
-        title: '写文章'
+        title: '修改文章'
     },
     component: (resolve) => require(['./views/article/update.vue'], resolve)
 },{
@@ -52,6 +52,12 @@ const routers = [{
         title: '关于'
     },
     component: (resolve) => require(['./views/about/index.vue'], resolve)
+},{
+    path: '/user/:who',
+    meta: {
+        title: '作者档案'
+    },
+    component: (resolve) => require(['./views/user/index.vue'], resolve)
 },{
     path: '/admin',
     meta: {

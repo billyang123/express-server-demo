@@ -16,7 +16,7 @@
             <p slot="extra" class="article-meta">
                 {{moment(item.createTime).fromNow()}} by {{item.user && item.user.name}}
             </p>
-            <p>摘要：{{item.abstract}} <a :href="'/article/'+item._id">查看详情</a></p>
+            <p>摘要：{{item.abstract}} <router-link :to="'/article/'+item._id">查看详情</router-link></p>
             <div class="cart-foot">
                 <Tag v-for="tag in item.tags" key="_id"><Icon type="pricetag"></Icon> {{tag.name}}</Tag>
             </div>

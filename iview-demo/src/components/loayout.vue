@@ -80,21 +80,13 @@
     <div class="layout" :class="{'layout-hide-text': !menuToggle}">
         <Row type="flex">
             <div class="layout-menu-left" :class="{active:menuToggle}" @mouseenter="menuShow" @mouseleave="menuHide">
-                <Menu :active-name="menu" theme="dark" width="auto" @on-select="menuTo">
+                <Menu :active-name="current" theme="dark" width="auto" @on-select="menuTo">
                     <div class="layout-logo-left">
                         <img style="height:30px;" src="http://yangbinbin.duapp.com/images/logo_2016.png" alt="">
                     </div>
-                    <Menu-item name="1">
-                        <Icon type="ios-home" :size="iconSize"></Icon>
-                        <span class="layout-text">主页</span>
-                    </Menu-item>
-                    <Menu-item name="2">
-                        <Icon type="ios-keypad" :size="iconSize"></Icon>
-                        <span class="layout-text">归档</span>
-                    </Menu-item>
-                    <Menu-item name="3">
-                        <Icon type="ios-person" :size="iconSize"></Icon>
-                        <span class="layout-text">关于</span>
+                    <Menu-item :key="item.title" :name="item.to" v-for="item in navs">
+                        <Icon :type="item.icon" :size="iconSize"></Icon>
+                        <span class="layout-text">{{item.title}}</span>
                     </Menu-item>
                 </Menu>
                 <div class="toggle-btn" :class="{hidden:toggleBtnShow}">
@@ -115,12 +107,28 @@
     </div>
 </template>
 <script>
+
     export default {
         data () {
             return {
+                user:null,
                 toggleBtnShow:false,
                 menuToggle:false,
-                spanLeft:76
+                spanLeft:76,
+                current:'/',
+                navs:[{
+                  to:'/',
+                  icon:'ios-home',
+                  title:'首页'
+                },{
+                  to:'/list',
+                  icon:'ios-keypad',
+                  title:'首页'
+                },{
+                  to:'/user/me',
+                  icon:'ios-person',
+                  title:'档案'
+                }]
             }
         },
         computed: {
@@ -130,12 +138,14 @@
         },
         props:['menu'],
         created(){
-           
+          this.user = this.utils.getCurUser(this);
+          if(this.menu && this.navs[this.menu-1]){
+            this.current = this.navs[this.menu-1].to;
+          }
         },
         methods: {
             menuTo(name){
-                var router = ['/',"/list","/about"];
-                this.$router.push(router[name-1])
+                this.$router.push(name)
                 // this.menu = name;
             },
             menuShow () {

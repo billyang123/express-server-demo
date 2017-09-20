@@ -17,6 +17,7 @@ router.get('/query', function(req, res) {
 router.get('/query/:id', function(req, res) {
   var id = req.params.id;
   F.co(function *() {
+    console.log(id);
   	var article = yield M.article.find({_id:id}).populate(['user','tags','cate']).exec();
   	res.json({
       status: {
@@ -66,19 +67,7 @@ router.get('/queryByKey', function(req, res) {
     })
   },res)
 });
-router.get('/query/:id', function(req, res) {
-  var query = req.params;
-  F.co(function *() {
-  	var article = yield M.article.findOne({_id:query.id}).populate(['user','tags','cate']).exec();
-  	res.json({
-      status: {
-        code: 0,
-        msg: ''
-      },
-      data:article
-    })
-  },res)
-});
+
 router.post('/write/:action', function(req, res) {
   var query = req.body,article;
   var action = req.params.action;
@@ -90,12 +79,13 @@ router.post('/write/:action', function(req, res) {
   F.co(function *() {
     var article = null;
     if(action == "add"){
+      _dbs.id =  getUID(_dbs.user);
       article = yield M.article.create(_dbs);
     }else if(action == "update"){
       var id =  _dbs.id;
-      delete _dbs._id
+      delete _dbs.id
       console.log(_dbs);
-      article = yield M.article.update({_id:id},{$set:_dbs});
+      article = yield M.article.update({id:id},{$set:_dbs});
     }else{
 
     }

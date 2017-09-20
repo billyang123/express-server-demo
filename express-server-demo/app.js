@@ -21,6 +21,9 @@ global.M = {};//model初始化
 global.D = __dirname;
 global.F = require(path.join(C.dir.controller, C.exceptFolder, 'funcs'));
 global.ObjectID = require('mongodb').ObjectID;
+global.getUID = function(d){
+  return F.encrypt(d+'_'+(new Date()).getTime())
+}
 global.moment = require('moment');
 require(path.join(C.dir.model, C.exceptFolder,'index')); // model初始化入口
 

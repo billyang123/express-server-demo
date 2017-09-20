@@ -85,7 +85,7 @@
                 </div>
                 <div class="list-item">
                     <span class="ptime">{{moment(item.createTime).format('YYYY-MM-DD')}}</span>
-                    <a class="title" :href="'/article/'+item._id">{{item.title}}</a>
+                    <router-link class="title" :to="'/article/'+item._id">{{item.title}}</router-link>
                 </div>
             </li>
         </ul>

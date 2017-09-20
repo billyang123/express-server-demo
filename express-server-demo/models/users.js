@@ -1,5 +1,6 @@
 module.exports = function (Schema) {
   return {
+    id:String,
 	  account:String,
 		password:String,
 		name:String,

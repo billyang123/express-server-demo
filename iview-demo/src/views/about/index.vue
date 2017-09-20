@@ -26,6 +26,7 @@ import LoayOut from '../../components/loayout'
   export default {
   	data() {
       return {
+				who:'me',
 				user:{}
       };
     },
@@ -33,11 +34,23 @@ import LoayOut from '../../components/loayout'
         LoayOut
     },
 		created(){
-			this.utils.checkLogin(this)
-			this.user = this.utils.getCurUser();
+			this.utils.checkLogin(this);
+			this.who = this.$route.params.who;
+			if(!this.who || this.who == 'me'){
+				this.user = this.utils.getCurUser(this);
+			}else{
+				this.getUser()
+			}
 		},
     methods: {
-
+			getUser(){
+				this.utils.ajax({
+					method: 'get',
+					url: `/api/users/about/${this.who}`
+				}).then((res)=>{
+					this.user = res.user
+				})
+			}
     }
   };
 </script>
