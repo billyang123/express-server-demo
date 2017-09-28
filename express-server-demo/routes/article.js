@@ -3,6 +3,14 @@ var router = express.Router();
 /* dologin */
 router.get('/query', function(req, res) {
   var query = req.query;
+  if(query.startDay && query.endDay){
+    query["$and"] = [
+      {"createTime":{"$gt":`${moment(query.startDay).format("YYYY-MM-DD")} 00:00:00`}},
+      {"createTime":{"$lt":`${moment(query.endDay).format('YYYY-MM-DD')} 23:59:59`}}
+    ]
+    delete startDay;
+    delete endDay
+  }
   F.co(function *() {
   	var article = yield M.article.find(query).sort({"updateTime":-1}).populate(['user','tags','cate']).exec();
   	res.json({
@@ -32,15 +40,19 @@ router.get('/day/query', function(req, res) {
   var query = req.query;
 
   var start = moment(query.startDay).format("YYYY-MM-DD");
+  var userId = query.userId;
   var end = moment(query.endDay).format('YYYY-MM-DD');
-  console.log(start,end)
+  var data = {
+    "$and":[
+      {"createTime":{"$gt":`${start} 00:00:00`}},
+      {"createTime":{"$lt":`${end} 23:59:59`}}
+    ]
+  }
+  if(userId){
+    data.user = userId
+  }
   F.co(function *() {
-  	var article = yield M.article.find({
-  		"$and":[
-  			{"createTime":{"$gt":`${start} 00:00:00`}},
-  			{"createTime":{"$lt":`${end} 23:59:59`}}
-  		]
-  	}).sort({"updateTime":-1}).populate(['user','tags','cate']).exec();
+  	var article = yield M.article.find(data).sort({"updateTime":-1}).populate(['user','tags','cate']).exec();
   	res.json({
       status: {
         code: 0,

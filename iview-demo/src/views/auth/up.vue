@@ -45,10 +45,16 @@
       <h1 class="login-title">{{type=="register"?"点滴-账号注册":"点滴-账号设置"}}</h1>
       <Form ref="formInline" :model="user" :rules="rules" :label-width="80">
           <Form-item prop="account" label="用户名">
-              <Input type="text" disabled v-model="user.account" placeholder="用户名" />
+              <Input type="text" :disabled="user.account?true:false" v-model="user.account" placeholder="用户名" />
           </Form-item>
           <Form-item prop="name" label="姓名">
               <Input type="text" v-model="user.name" placeholder="姓名" />
+          </Form-item>
+					<Form-item prop="sex" label="性别">
+						<RadioGroup v-model="sex">
+								<Radio label="男"></Radio>
+								<Radio label="女"></Radio>
+						</RadioGroup>
           </Form-item>
           <Form-item prop="email" label="邮箱">
               <Input type="text" v-model="user.email" placeholder="邮箱" />
@@ -78,7 +84,7 @@
 				        :before-upload="handleBeforeUpload"
 				        multiple
 				        type="drag"
-				        action="http://127.0.0.1:3000/utils/upload"
+				        action="http://127.0.0.1:3000/api/utils/upload"
 				        style="display: inline-block;width:58px;">
 				        <div style="width: 58px;height:58px;line-height: 58px;">
 				            <Icon type="camera" size="20"></Icon>
@@ -116,17 +122,31 @@
   export default {
   	data() {
       return {
+				sex:'男',
 				defaultList: [],
         imgName: '',
         visible: false,
         uploadList: [],
 
-				user:null,
+				user:{
+          account: '',
+          password: '',
+          name:'',
+					sex:'男',
+          email:'',
+          avator:'',
+          hobby:'',
+          motto:'',
+          selfAssessment:'',
+          profession:'',
+          QQ:''
+        },
         avator:'',
         rules:{
 					account: [
               { required: true, message: '请填写用户名', trigger: 'blur' }
           ],
+					sex:{ required: true, message: '请选择性别', trigger: 'blur' },
           name:{ required: true, message: '请填写姓名', trigger: 'blur' },
   	 			email:{ required: true, message: '请填写邮箱', trigger: 'blur' }
         }
@@ -139,6 +159,7 @@
           account: '',
           password: '',
           name:'',
+					sex:'男',
           email:'',
           avator:'',
           hobby:'',
@@ -149,10 +170,14 @@
         };
       }else{
         this.utils.checkLogin(this)
-        this.user = this.utils.getCurUser();
-  			if(this.user && this.user.avator){
+        let user = this.utils.getCurUser();
+  			if(user && user.avator){
   				this.defaultList = [{name:this.user.name,url:this.user.avator}]
   			}
+				if(user) {
+					this.sex = user.sex?user.sex:'男';
+					this.user = user;
+				}
       }
 		},
     methods: {
@@ -164,19 +189,21 @@
 			handleRemove (file) {
 					// 从 upload 实例删除数据
 					const arr = file.url.split('/');
+					const fileList = this.$refs.upload.fileList;
+					this.$refs.upload.fileList.splice(fileList.indexOf(file), 1);
 
-					this.utils.ajax({
-            method: 'post',
-            url: '/api/utils/delQiniuFile',
-            data: {
-              keys:arr[arr.length-1]
-            }
-          }).then((res)=>{
-            if(!res.status.code){
-							const fileList = this.$refs.upload.fileList;
-							this.$refs.upload.fileList.splice(fileList.indexOf(file), 1);
-            }
-          })
+					// this.utils.ajax({
+          //   method: 'post',
+          //   url: '/api/utils/delQiniuFile',
+          //   data: {
+          //     keys:arr[arr.length-1]
+          //   }
+          // }).then((res)=>{
+          //   if(!res.status.code){
+					// 		const fileList = this.$refs.upload.fileList;
+					// 		this.$refs.upload.fileList.splice(fileList.indexOf(file), 1);
+          //   }
+          // })
 					console.log(file)
 			},
 			handleSuccess (res, file) {
@@ -214,8 +241,9 @@
           let post = {
             account:this.user.account,
             name:this.user.name,
+						sex:this.sex,
             email:this.user.email,
-            avator:this.uploadList[0].url,
+            avator:this.uploadList.length == 1?this.uploadList[0].url:'',
             hobby:this.user.hobby,
             motto:this.user.motto,
             selfAssessment:this.user.selfAssessment,

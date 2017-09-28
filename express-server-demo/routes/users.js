@@ -83,6 +83,7 @@ router.post('/auth/:action', function(req, res, next) {
       })
 		} else if (action === 'out') {
       req.session.admin = null;
+      req.session = null;
       res.json({
         status: {
           code: 0,
@@ -122,6 +123,7 @@ router.post('/auth/:action', function(req, res, next) {
       post = {
         account:req.body.account,
 	 			name:req.body.name,
+        sex:req.body.sex,
 	 			email:req.body.email,
 				avator:req.body.avator,
         hobby:req.body.hobby,

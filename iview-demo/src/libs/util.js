@@ -9,7 +9,7 @@ util.title = function(title) {
     title = title ? title + ' - Home' : 'iView project';
     window.document.title = title;
 };
-
+console.log(env);
 const ajaxUrl = env === 'development' ?
     'http://127.0.0.1:3000' :
     env === 'production' ?
@@ -50,6 +50,10 @@ let storage = {
     }
     return null
   },
+  clear:function(store){
+    if(!store) store = window.sessionStorage;
+    store.removeItem('diandi_BaseInfo')
+  },
   update:function(obj,store){
     if(!store) store = window.sessionStorage;
     if (store.getItem('diandi_BaseInfo')) {
@@ -58,9 +62,17 @@ let storage = {
       store.setItem('diandi_BaseInfo',JSON.stringify(newData))
     }
   },
-  remove:function(store){
+  remove:function(name,store){
     if(!store) store = window.sessionStorage;
-    store.removeItem('diandi_BaseInfo')
+    if (store.getItem('diandi_BaseInfo')) {
+      let data = JSON.parse(store.getItem('diandi_BaseInfo'));
+      if(name){
+        delete data[name];
+        store.setItem('diandi_BaseInfo',JSON.stringify(data))
+      }else{
+        store.removeItem('diandi_BaseInfo')
+      }
+    }
   }
 }
 util.storage = storage
@@ -71,7 +83,6 @@ util.setCookie = function (cname, cvalue, exdays) {
     var expires = "expires=" + d.toUTCString();
     console.info(cname + "=" + cvalue + "; " + expires);
     document.cookie = cname + "=" + cvalue + "; " + expires;
-    console.info(document.cookie);
 }
 //获取cookie
 util.getCookie = function (cname) {
@@ -84,9 +95,21 @@ util.getCookie = function (cname) {
     }
     return "";
 }
+util.clearCookie = function (name) {
+  var exp = new Date();
+  exp.setTime(exp.getTime() - 1);
+  var cval=util.getCookie(name);
+  if(cval!=null)
+  document.cookie= name + "="+cval+";expires="+exp.toGMTString();
+}
+util.logout = function (){
+  util.storage.clear();
+  util.clearCookie('userId');
+}
 util.checkLogin = function (comp) {
-    var user = this.getCookie("userId") && util.storage.get('user');
-    if (user != "") {
+    var userId = this.getCookie("userId") && util.storage.get('user');
+    let user = util.storage.get('user');
+    if (userId != "" && user) {
         return true;
     } else {
         comp.$router.push({ path: '/login',query:{directUrl:comp.$route.fullPath} })

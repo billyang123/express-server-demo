@@ -268,10 +268,7 @@
 				this.utils.ajax({
 					method: 'post',
 					url: '/api/utils/upload',
-					data: formdata,
-					headers: {
-				    'Content-Type': 'application/x-www-form-urlencoded'
-				  }
+					data: formdata
 				}).then((res)=>{
 					console.log(res);
 					this.$Message.success('提交成功!')

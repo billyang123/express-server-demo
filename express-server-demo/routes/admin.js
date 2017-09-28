@@ -6,7 +6,6 @@ var utilsFns = function(schema,action,body,res,pushObj){
 	console.log(body)
 	F.co(function *() {
 		if(action == "add"){
-
 			for(var i=0;i< pushObj.length;i++){
 				post[pushObj[i]] = body[pushObj[i]]
 			}

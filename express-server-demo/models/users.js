@@ -4,6 +4,10 @@ module.exports = function (Schema) {
 	  account:String,
 		password:String,
 		name:String,
+    sex:{
+			type:String,
+			default:'男'
+		},
 		posts:[{
 				type : Schema.Types.ObjectId,
 				ref : 'Article'

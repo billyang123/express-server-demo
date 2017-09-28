@@ -62,10 +62,11 @@ app.all('*', function(req, res, next) {
 });
 var htmlRouter = ['/index'];
 for(r in routes){
-  if(htmlRouter.indexOf(r)>-1){
+  if(htmlRouter.indexOf(r) > -1){
     app.use(r, routes[r]);
   }else{
     app.use('/api'+r, routes[r]);
+
   }
 }
 // catch 404 and forward to error handler

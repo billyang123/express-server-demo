@@ -2,12 +2,12 @@
 
 </style>
 <template>
-    <LoayOut menu="－1">
+    <LayOut menu="－1">
         <ArticleBox :content="content"></ArticleBox>
-    </LoayOut>
+    </LayOut>
 </template>
 <script>
-    import LoayOut from '../../components/loayout'
+    import LayOut from '../../components/layout'
     import ArticleBox from '../../components/article'
     export default {
         data () {
@@ -19,7 +19,7 @@
 
         },
         components: {
-            LoayOut,
+            LayOut,
             ArticleBox
         },
         created(){

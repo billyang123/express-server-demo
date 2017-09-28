@@ -6,7 +6,7 @@
         .list-item {
             position: relative;
             min-height: 40px;
-            padding: 10px 10px;
+            padding: 20px 7px;
             &:hover {
                 &:after {
                     transform:scale(1.2);
@@ -46,7 +46,7 @@
                 border:2px solid #fff;
                 border-radius: 50%;
                 left: -15px;
-                top: 14px;
+                top: 25px;
                 transition:all 0.4s ease-in-out;
             }
             .ptime {
@@ -56,6 +56,8 @@
                 color: #333;
                 font-size: 14px;
                 transition:all 0.4s ease-in-out;
+                width: 87px;
+                text-align: center;
             }
             &.list-item-m {
                 .ptime {
@@ -76,15 +78,22 @@
     }
 </style>
 <template>
-    <LoayOut menu="2">
-    	<Date-picker  @on-change="pickerChange"  type="daterange" placement="bottom-end" placeholder="选择日期" style="width: 430px"></Date-picker>
+    <LayOut :current="1">
+      <Form ref="formInline" inline>
+          <FormItem>
+              <Date-picker @on-change="pickerChange" type="daterange" placement="bottom-end" placeholder="选择日期" style="width: 430px"></Date-picker>
+          </FormItem>
+          <FormItem prop="password">
+              <Checkbox label="我的" @on-change="checkisMine">我的</Checkbox>
+          </FormItem>
+      </Form>
         <ul class="arttime-list">
             <li v-for="item in list" key="_id">
                 <div class="list-item list-item-m" v-if="item.month">
                     <span class="ptime">{{item.month}}</span>
                 </div>
                 <div class="list-item">
-                    <span class="ptime">{{moment(item.createTime).format('YYYY-MM-DD')}}</span>
+                    <span class="ptime">{{moment(item.createTime).format('YYYY-MM-DD HH:mm:ss')}}</span>
                     <router-link class="title" :to="'/article/'+item._id">{{item.title}}</router-link>
                 </div>
             </li>
@@ -105,17 +114,19 @@
                 <Tag v-for="tag in item.tags" key="_id"><Icon type="pricetag"></Icon> {{tag.name}}</Tag>
             </div>
         </Card> -->
-    </LoayOut>
+    </LayOut>
 </template>
 <script>
-    import LoayOut from '../../components/loayout'
+    import LayOut from '../../components/layout'
     import moment from 'moment'
     export default {
         data () {
             return {
             	list:[],
+              params:{},
+              isMine:false,
                 timeArr:[],
-
+                user:null,
                 // pickDate:[new Date(),new Date()],
             	moment:moment
             }
@@ -124,7 +135,7 @@
 
         },
         components: {
-            LoayOut
+            LayOut
         },
         created(){
             // let now =this.moment().format("YYYY-MM-DD");
@@ -132,6 +143,7 @@
             //     start:now,
             //     end:now
             // })
+            this.user = this.utils.getCurUser();
             this.utils.ajax({
                 method: 'get',
                 url: '/api/article/query'
@@ -143,6 +155,23 @@
 
         },
         methods: {
+          search(params){
+            let data = Object.assign({},this.params,params);
+            if(this.isMine){
+              data.user = this.user.id
+            }
+            this.utils.ajax({
+                method: 'get',
+                url: '/api/article/query',
+                params: data
+            }).then((res)=>{
+                this.list = this.timelineDo(res.data);
+            })
+          },
+          checkisMine(v){
+            this.isMine = v
+            this.search()
+          },
             timelineDo(data){
                 let result = {};
                 let t = null;
@@ -156,32 +185,20 @@
                 })
                 return data;
             },
-        	searchByDay(_Day){
-        		let start,end;;
-        		if(typeof(_Day) == "string"){
-        			start = end = _Day;
-        		}else if(typeof(_Day) == "object"){
-        			start = _Day.start;
-        			end = _Day.end;
-        		}else{
-        			start = end = Date.now();
-        		}
-        		this.utils.ajax({
-					method: 'get',
-					url: '/api/article/day/query',
-					params: {
-					  startDay:start,
-					  endDay:end
-					}
-				}).then((res)=>{
-					this.list = this.timelineDo(res.data);
-	          	})
-        	},
             pickerChange(tm){
-            	this.searchByDay({
-            		start:tm[0],
-            		end:tm[1]
-            	})
+              let start = tm[0],end = tm[1];
+              let data = {};
+          		if(typeof(_Day) == "string"){
+          			start = end = _Day;
+          		}else if(typeof(_Day) == "object"){
+          			start = _Day.start;
+          			end = _Day.end;
+          		}else{
+          			start = end = Date.now();
+          		}
+              this.params.startDay = start;
+              this.params.endDay = end;
+              this.search()
             }
         }
     }
