@@ -263,11 +263,12 @@
 			uploadImg(){
 				var formdata = new FormData();
         for(var _img in this.img_file){
+					console.log(_img,this.img_file[_img]);
             formdata.append(_img, this.img_file[_img]);
         }
 				this.utils.ajax({
 					method: 'post',
-					url: '/api/utils/upload',
+					url: '/api/utils/uploadImg',
 					data: formdata
 				}).then((res)=>{
 					console.log(res);

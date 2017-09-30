@@ -148,7 +148,7 @@
             this.catModalTitle = `删除${this.title}`
             this.catModalForm  = this.catList[index];
             this.catOptionType = "delete";
-            this.$Modal.warning({
+            this.$Modal.confirm({
                 title: '警告',
                 content: '是否'+this.catModalTitle,
                 onOk:this.onOk.bind(this)

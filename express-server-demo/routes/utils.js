@@ -4,11 +4,14 @@ var fs = require('fs');
 var multiparty = require('multiparty');
 var qiniu = require('../libs/qiniu');
 
+
+//var uploader = require('multer')({ dest: D+C.upload.path });
+
 router.get('/upload', function(req, res, next) {
   res.send('respond with a resource');
 });
 router.post('/upload',function (req, res, next) {
-  console.log(D+C.upload.path);
+  console.log(req.file);
   var uploadDir = D+C.upload.path;
   var form = new multiparty.Form({uploadDir: uploadDir});
   form.parse(req, function(err, fields, files) {
@@ -35,6 +38,7 @@ router.post('/upload',function (req, res, next) {
       }
   })
 });
+
 router.get('/delQiniuFile', function(req, res, next) {
   var keysArr = req.query.keys.split(',');
   console.log(keysArr);

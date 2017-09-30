@@ -29,6 +29,14 @@ module.exports = function (Schema) {
 		cate:{
 			type : Schema.Types.ObjectId,
 			ref : 'category'
-		}
+		},
+    online:{
+      type:Boolean,
+			default:false
+    },
+    level:{
+      type:Number,
+			default:0
+    }
 	};
 }

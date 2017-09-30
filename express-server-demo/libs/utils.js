@@ -40,7 +40,39 @@ function deleteFolderRecursive(url) {
     console.log("给定的路径不存在，请给出正确的路径");
   }
 };
+function Pagination(query,Todo,callback,res){
+	F.co(function *() {
+		var pagin = {};
+		var TODOModel = null;
+		var data = null;
+		if(query.params) query.params = {};
+		TODOModel = M[Todo].find(query.params)
+		if(query.sort){
+			TODOModel = TODOModel.sort(query.sort)
+		}
+		if(query.pagin){
+			pagin.total = yield M[Todo].count({});
+			pagin.currentPage = parseInt(query.pagin.currentPage,10);
+			pagin.pageSize = parseInt(query.pagin.pageSize,10) || 10;
+      console.log(pagin.currentPage,pagin.pageSize);
+			TODOModel = TODOModel.skip((pagin.currentPage-1)*pagin.pageSize).limit(pagin.pageSize)
+		}
+		if(query.populate){
+			TODOModel = TODOModel.populate(query.populate)
+		}
+		data = yield TODOModel.exec()
+		callback({
+			status: {
+				code: 0,
+				msg: ''
+			},
+			pagin:pagin,
+			data:data
+		})
+	},res)
+}
 module.exports = {
 	findSync,
-  deleteFolderRecursive
+  deleteFolderRecursive,
+  Pagination
 }

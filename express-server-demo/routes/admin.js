@@ -1,9 +1,7 @@
 var express = require('express');
 var router = express.Router();
-
 var utilsFns = function(schema,action,body,res,pushObj){
 	var post = {};
-	console.log(body)
 	F.co(function *() {
 		if(action == "add"){
 			for(var i=0;i< pushObj.length;i++){
@@ -64,10 +62,9 @@ var utilsFns = function(schema,action,body,res,pushObj){
 
   },res)
 }
-
 router.get('/category', function(req, res) {
-	console.log(M);
 	var query = req.query;
+
   F.co(function *() {
   	var category = yield M.category.find(query);
   	res.json({
@@ -79,11 +76,63 @@ router.get('/category', function(req, res) {
     })
   },res)
 })
+router.get('/article', function(req, res) {
+	var query = req.query;
+	U.Pagination({
+		pagin:{
+			currentPage:query.currentPage,
+			pageSize:query.pageSize
+		},
+		sort:{"updateTime":-1},
+		populate:['user','tags','cate']
+	},'article',function(d){
+		res.json(d)
+	},res)
+  // F.co(function *() {
+  // 	var article = yield M.article.find(query);
+	// 	console.log(article.length);
+  // 	res.json({
+  //     status: {
+  //       code: 0,
+  //       msg: ''
+  //     },
+  //     data:article
+  //   })
+  // },res)
+})
+router.post('/article/:action', function(req, res) {
+	F.co(function *() {
+		var body = req.body;
+		var action = req.params.action;
+		var result = null;
+		console.log(body,action);
+		switch (action) {
+			case 'online':
+				result = yield M.article.update({id:body.id},{$set:{online:true}})
+				break;
+			case 'offline':
+				result = yield M.article.update({id:body.id},{$set:{online:false}})
+				break;
+			case 'delete':
+				result = yield M.article.remove({id:body.id})
+				break;
+			default:
+				result = null
+				break;
+		}
+		res.json({
+			data:result,
+			status: {
+				code: 0,
+				msg: '设置成功'
+			}
+		});
+	},res)
+})
 router.post('/category/:action', function(req, res) {
 	var body = req.body;
 	var action = req.params.action;
 	var post = {}
-
   utilsFns('category',action,body,res,['name','describe'])
 })
 router.get('/tags', function(req, res) {

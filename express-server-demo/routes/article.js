@@ -11,8 +11,10 @@ router.get('/query', function(req, res) {
     delete startDay;
     delete endDay
   }
+  query.online = true;
   F.co(function *() {
   	var article = yield M.article.find(query).sort({"updateTime":-1}).populate(['user','tags','cate']).exec();
+
   	res.json({
       status: {
         code: 0,
@@ -26,7 +28,7 @@ router.get('/query/:id', function(req, res) {
   var id = req.params.id;
   F.co(function *() {
     console.log(id);
-  	var article = yield M.article.find({_id:id}).populate(['user','tags','cate']).exec();
+  	var article = yield M.article.find({_id:id,online:true}).populate(['user','tags','cate']).exec();
   	res.json({
       status: {
         code: 0,
@@ -51,6 +53,7 @@ router.get('/day/query', function(req, res) {
   if(userId){
     data.user = userId
   }
+  data.online = true;
   F.co(function *() {
   	var article = yield M.article.find(data).sort({"updateTime":-1}).populate(['user','tags','cate']).exec();
   	res.json({
@@ -68,6 +71,7 @@ router.get('/queryByKey', function(req, res) {
   var sreacKeyRegExp = new RegExp(query.key);
   var params = {};
   params[fd] = sreacKeyRegExp;
+  params.online = true;
   F.co(function *() {
   	var article = yield M.article.find(params).populate(['user','tags','cate']).exec();
   	res.json({

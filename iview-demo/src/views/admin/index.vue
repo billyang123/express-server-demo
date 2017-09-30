@@ -1,17 +1,18 @@
 <style lang="less" scoped>
   .admin-box {
-    width: 1024px;
-    margin: 30px auto;
+    margin: 30px;
   }
 </style>
 <template>
   <div class="admin-box">
     <Cate type="category" title="分类"/>
     <Cate type="tags" title="标签"/>
+    <ArticleCate/>
   </div>
 </template>
 <script>
     import Cate from './cate'
+    import ArticleCate from './article'
     export default {
         data () {
             return {
@@ -22,7 +23,8 @@
 
         },
         components: {
-          Cate
+          Cate,
+          ArticleCate
         },
         created(){
 
